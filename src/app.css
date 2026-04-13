@@ -1,0 +1,44 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@1,900&display=swap');
+
+:root {
+  --primary-blue: #0047b3;
+  --dark-blue: #001f4d;
+  --highlight-cyan: #00f0ff;
+  --pink-accent: #ff4785;
+  --pink-bg: #ff6496;
+  --font-main: "Rodin Pro", "FOT-Rodin Pro", "Rubik", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-main);
+  background-color: var(--dark-blue);
+  color: #ffffff;
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+  position: relative;
+  /* Deep blue gradient approximation of P3R water background */
+  background: 
+    linear-gradient(135deg, rgba(0, 240, 255, 0.1) 0%, transparent 50%),
+    linear-gradient(to top, rgba(0, 71, 179, 0.8), #000c24);
+}
+
+/* Water/ripples effect background layer */
+.bg-layer {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: repeating-linear-gradient(
+    transparent,
+    transparent 20px,
+    rgba(0, 240, 255, 0.03) 20px,
+    rgba(0, 240, 255, 0.03) 22px
+  );
+  z-index: 1;
+  pointer-events: none;
+}
