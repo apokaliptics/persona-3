@@ -1,43 +1,74 @@
-# Svelte + Vite
+# Persona 3 Reload UI Implementation
 
-This template should help get you started developing with Svelte in Vite.
+A web-based recreation of the iconic, highly stylized Persona 3 menu interface built entirely with Svelte 5 and CSS. This project focuses on pure CSS aesthetics, avoiding heavy 3D rendering libraries like WebGL or Three.js in favor of standard transform math, layered blend modes, and CSS animations.
 
-## Recommended IDE Setup
+## Features
 
-[VS Code](https://code.visualstudio.com/) + [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode).
+- **Fluid Curved Menu:** The menu items follow a mathematical quadratic curve (parabola) to dynamically scale and curve around background elements, perfectly matching the original slanted menu style.
+- **Aggressive Chaotic Tilt:** Each list item utilizes a scripted pseudo-random formula (`Math.sin(index)`) to generate a unique, aggressive baseline slant while keeping the overarching italic lean consistent.
+- **Layered Lighting Cursors:** On hover, the components spawn a dual-layered, skewed highlight layer leveraging `mix-blend-mode: screen`, gaussian blurs across CSS gradients, and textured backgrounds.
+- **Dynamic Stack Depth:** Heavy usage of negative margins paired with a reverse-ordered `z-index` so that the slanted words geometrically stack on top of each other.
+- **Fullscreen Video Background:** Clean, muted, full-bleed autoplaying video integration to support dynamic shifting water effects mirroring the game's actual main menu loop.
 
-## Need an official Svelte framework?
+## Setup & Installation
 
-Check out [SvelteKit](https://github.com/sveltejs/kit#readme), which is also powered by Vite. Deploy anywhere with its serverless-first approach and adapt to various platforms, with out of the box support for TypeScript, SCSS, and Less, and easily-added support for mdsvex, GraphQL, PostCSS, Tailwind CSS, and more.
+This project is built using modern **Svelte 5** and **Vite**.
 
-## Technical considerations
+### Prerequisites
+- Node.js (v18+ recommended)
+- npm or pnpm
 
-**Why use this over SvelteKit?**
+### Getting Started
 
-- It brings its own routing solution which might not be preferable for some users.
-- It is first and foremost a framework that just happens to use Vite under the hood, not a Vite app.
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/apokaliptics/persona-3.git
+   cd persona-3
+   ```
 
-This template contains as little as possible to get started with Vite + Svelte, while taking into account the developer experience with regards to HMR and intellisense. It demonstrates capabilities on par with the other `create-vite` templates and is a good starting point for beginners dipping their toes into a Vite + Svelte project.
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-Should you later need the extended capabilities and extensibility provided by SvelteKit, the template has been structured similarly to SvelteKit so that it is easy to migrate.
+3. **Start the Development Server:**
+   Launch the high-performance Vite dev server with hot-module replacement (HMR).
+   ```bash
+   npm run dev
+   ```
+   Open `http://localhost:5173/` in your browser.
 
-**Why include `.vscode/extensions.json`?**
+## Project Structure
 
-Other templates indirectly recommend extensions via the README, but this file allows VS Code to prompt the user to install the recommended extension upon opening the project.
+- `src/App.svelte`: The main application boundary. It houses the fullscreen layout styling, the underlying `background-real.mp4` video layer, and the dataset array containing the navigation items.
+- `src/lib/MenuButton.svelte`: The complex button component. This handles the mathematical curve offsets, pseudo-random tilt calculations, and the intricate hover lighting pseudo-DOM elements.
+- `src/app.css`: The global stylesheet defining the deep blue aesthetics, the custom fallback font stacks targeting `Rodin Pro -> Rubik`, and global resets.
+- `public/`: Assets directory containing `background-real.mp4`, and `hover-texture.png`. Since they are in `public`, they aren't processed by Vite and are accessed via standard root path (`/`).
 
-**Why enable `checkJs` in the JS template?**
+## How to Customize
 
-It is likely that most cases of changing variable types in runtime are likely to be accidental, rather than deliberate. This provides advanced typechecking out of the box. Should you like to take advantage of the dynamically-typed nature of JavaScript, it is trivial to change the configuration.
+### Adjusting the Curve
+If you need to change how sharply the menu hugs the left side of the screen, adjust the multiplier inner math inside `src/lib/MenuButton.svelte`:
+```svelte
+<div style="transform: translateX({(index - 4.5) * (index - 4.5) * [YOUR MULTIPLIER] - [OFFSET]}vw);">
+```
 
-**Why is HMR not preserving my local component state?**
+### Adjusting Chaotic Tilt
+Inside `src/lib/MenuButton.svelte`, the `tilt` variable handles how wild the rotational offset is per word.
+```javascript
+// Change the multipliers to reduce or increase the aggressive tilt limits
+const tilt = -13 + Math.sin(index * 123.45) * 9;
+```
 
-HMR state preservation comes with a number of gotchas! It has been disabled by default in both `svelte-hmr` and `@sveltejs/vite-plugin-svelte` due to its often surprising behavior. You can read the details [here](https://github.com/sveltejs/svelte-hmr/tree/master/packages/svelte-hmr#preservation-of-local-state).
+## Production Build
 
-If you have state that's important to retain within a component, consider creating an external store which would not be replaced by HMR.
+To build the optimized static asset payload for production environments (like Vercel, Netlify, or Github Pages):
+```bash
+npm run build
+```
+This produces a `/dist` folder containing minified CSS/JS and localized assets.
 
-```js
-// store.js
-// An extremely simple external store
-import { writable } from 'svelte/store'
-export default writable(0)
+To preview your production build locally:
+```bash
+npm run preview
 ```

@@ -3,7 +3,7 @@
   import MenuButton from './lib/MenuButton.svelte';
 
   const menuItems = [
-    { label: "SKILL", color: "white" },
+    { label: "SKILL", color: "cyan" },
     { label: "ITEM", color: "cyan" },
     { label: "EQUIP", color: "cyan" },
     { label: "PERSONA", color: "cyan" },
@@ -21,9 +21,9 @@
   <!-- Water reflection overlay pattern -->
   <div class="bg-layer"></div>
 
-  <!-- Main character image left side (Image 3) -->
+  <!-- Main character image/video -->
   <div class="character-wrapper">
-    <img src="/person.jpg" alt="Persona Character" class="character-image" />
+    <video src="/background-real.mp4" autoplay loop muted playsinline class="character-image"></video>
   </div>
 
   <!-- Right Side Interactive Menu (Staircase list) -->
@@ -73,6 +73,7 @@
     flex-direction: column;
     margin-right: 5vw;
     margin-top: 5vh;
+    transform: translateX(-370px);
   }
 
   @keyframes float {
