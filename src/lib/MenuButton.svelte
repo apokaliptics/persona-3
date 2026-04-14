@@ -2,7 +2,7 @@
   let { label, index, color = "cyan", isSkill = false } = $props();
 
   // Pseudo-randomizing tilt between -22deg and -4deg for a more aggressive chaotic look
-  const tilt = -13 + Math.sin(index * 123.45) * 9;
+  let tilt = $derived(-13 + Math.sin(index * 123.45) * 9);
 </script>
 
 <div
