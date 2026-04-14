@@ -1,4 +1,5 @@
 <script>
+  import { onMount } from 'svelte';
   import './app.css';
   import MenuButton from './lib/MenuButton.svelte';
 
@@ -13,6 +14,42 @@
     { label: "CALENDAR", color: "darkblue" },
     { label: "SYSTEM", color: "cyan" }
   ];
+
+  let audioRef;
+
+  onMount(() => {
+    // Attempt to play immediately
+    const playAudio = () => {
+      if (audioRef) {
+        audioRef.play().catch(() => {
+          // Ignore autoplay block errors
+        });
+      }
+    };
+    
+    playAudio();
+
+    // Auto-play workaround: play on any user interaction
+    const handleInteraction = () => {
+      playAudio();
+      window.removeEventListener('click', handleInteraction);
+      window.removeEventListener('keydown', handleInteraction);
+      window.removeEventListener('touchstart', handleInteraction);
+      window.removeEventListener('mousemove', handleInteraction);
+    };
+
+    window.addEventListener('click', handleInteraction);
+    window.addEventListener('keydown', handleInteraction);
+    window.addEventListener('touchstart', handleInteraction);
+    window.addEventListener('mousemove', handleInteraction);
+
+    return () => {
+      window.removeEventListener('click', handleInteraction);
+      window.removeEventListener('keydown', handleInteraction);
+      window.removeEventListener('touchstart', handleInteraction);
+      window.removeEventListener('mousemove', handleInteraction);
+    };
+  });
 </script>
 
 <div class="app-container">
@@ -23,7 +60,7 @@
 
   <!-- Main character image/video -->
   <div class="character-wrapper">
-    <video src="/background-real.mp4" autoplay loop muted playsinline class="character-image"></video>
+    <video src="{import.meta.env.BASE_URL}background-real.mp4" autoplay loop muted playsinline class="character-image"></video>
   </div>
 
   <!-- Right Side Interactive Menu (Staircase list) -->
@@ -37,6 +74,8 @@
       />
     {/each}
   </nav>
+
+  <audio bind:this={audioRef} src="{import.meta.env.BASE_URL}music.mp3" loop></audio>
 </div>
 
 <style>
