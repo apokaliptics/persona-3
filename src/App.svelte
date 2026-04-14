@@ -15,30 +15,28 @@
     { label: "SYSTEM", color: "cyan" }
   ];
 
-  let audioRef;
-
   onMount(() => {
-    // Attempt to play immediately
-    const playAudio = () => {
-      if (audioRef) {
-        audioRef.play().catch(() => {
-          // Ignore autoplay block errors
-        });
-      }
-    };
-    
-    playAudio();
+    // Native JS Audio API for persistent background music
+    const audioUrl = import.meta.env.BASE_URL + "music.mp3";
+    const bgm = new Audio(audioUrl);
+    bgm.loop = true;
+    bgm.volume = 0.5; // Set to 50% so it's not deafening
 
-    // Auto-play workaround: play on valid user interactions (click/tap/key)
+    // Attempt to play immediately (sometimes works if domain is trusted)
+    bgm.play().catch(() => {});
+
+    // Auto-play workaround: play on valid user interactions
+    let hasInteracted = false;
     const handleInteraction = () => {
-      if (audioRef) {
-        audioRef.play().then(() => {
+      if (!hasInteracted) {
+        bgm.play().then(() => {
+          hasInteracted = true;
           // Playback started successfully, remove listeners
           window.removeEventListener('click', handleInteraction);
           window.removeEventListener('keydown', handleInteraction);
           window.removeEventListener('touchstart', handleInteraction);
         }).catch(() => {
-          // Playback failed (not a valid interaction), keep listeners active
+          // Playback failed, wait for next user action
         });
       }
     };
@@ -48,6 +46,7 @@
     window.addEventListener('touchstart', handleInteraction);
 
     return () => {
+      bgm.pause();
       window.removeEventListener('click', handleInteraction);
       window.removeEventListener('keydown', handleInteraction);
       window.removeEventListener('touchstart', handleInteraction);
@@ -78,7 +77,6 @@
     {/each}
   </nav>
 
-  <audio bind:this={audioRef} src="{import.meta.env.BASE_URL}music.mp3" loop autoplay></audio>
 </div>
 
 <style>
