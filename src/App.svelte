@@ -29,25 +29,28 @@
     
     playAudio();
 
-    // Auto-play workaround: play on any user interaction
+    // Auto-play workaround: play on valid user interactions (click/tap/key)
     const handleInteraction = () => {
-      playAudio();
-      window.removeEventListener('click', handleInteraction);
-      window.removeEventListener('keydown', handleInteraction);
-      window.removeEventListener('touchstart', handleInteraction);
-      window.removeEventListener('mousemove', handleInteraction);
+      if (audioRef) {
+        audioRef.play().then(() => {
+          // Playback started successfully, remove listeners
+          window.removeEventListener('click', handleInteraction);
+          window.removeEventListener('keydown', handleInteraction);
+          window.removeEventListener('touchstart', handleInteraction);
+        }).catch(() => {
+          // Playback failed (not a valid interaction), keep listeners active
+        });
+      }
     };
 
     window.addEventListener('click', handleInteraction);
     window.addEventListener('keydown', handleInteraction);
     window.addEventListener('touchstart', handleInteraction);
-    window.addEventListener('mousemove', handleInteraction);
 
     return () => {
       window.removeEventListener('click', handleInteraction);
       window.removeEventListener('keydown', handleInteraction);
       window.removeEventListener('touchstart', handleInteraction);
-      window.removeEventListener('mousemove', handleInteraction);
     };
   });
 </script>
@@ -75,7 +78,7 @@
     {/each}
   </nav>
 
-  <audio bind:this={audioRef} src="{import.meta.env.BASE_URL}music.mp3" loop></audio>
+  <audio bind:this={audioRef} src="{import.meta.env.BASE_URL}music.mp3" loop autoplay></audio>
 </div>
 
 <style>
@@ -112,7 +115,7 @@
     flex-direction: column;
     margin-right: 5vw;
     margin-top: 5vh;
-    transform: translateX(-370px);
+    transform: translateX(-19vw); /* Replaced -370px with vw for consistent relative layout across display sizes */
   }
 
   @keyframes float {

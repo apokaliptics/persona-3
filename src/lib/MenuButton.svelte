@@ -98,7 +98,7 @@
     font-family: inherit;
     font-size: min(6vw, 5rem);
     font-style: italic;
-    font-weight: normal;
+    font-weight: 900;
     line-height: 0.9;
     letter-spacing: -3px;
     text-transform: uppercase;
